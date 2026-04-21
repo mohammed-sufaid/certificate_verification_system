@@ -1,0 +1,38 @@
+# Node
+node_modules/
+npm-debug.log
+
+# Angular
+.angular/
+dist/
+out-tsc/
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# .NET
+bin/
+obj/
+
+# User files
+*.user
+*.suo
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env
+.env
+
+# Docker temp
+*.pid
+
+# SQL backups
+*.bak
+*.mdf
+*.ldf

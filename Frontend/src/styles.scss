@@ -1,0 +1,51 @@
+/* Global Theme and Typography Variables */
+:root {
+  --primary-color: #3b82f6;
+  --secondary-color: #8b5cf6;
+  --background-light: #f3f4f6;
+  --background-dark: #0f172a;
+  
+  --card-bg-light: #ffffff;
+  --card-bg-dark: rgba(255, 255, 255, 0.03);
+  
+  --text-dark: #1e293b;
+  --text-light: #ffffff;
+  --text-muted: #64748b;
+  
+  --border-color: #e2e8f0;
+
+  --font-size-xs: 12px;
+  --font-size-sm: 13px;
+  --font-size-base: 14px;
+  --font-size-md: 15px;
+  --font-size-lg: 16px;
+  --font-size-xl: 18px;
+  --font-size-xxl: 24px;
+  --font-size-title: 32px;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', Roboto, "Helvetica Neue", sans-serif;
+  background-color: var(--background-light);
+  color: var(--text-dark);
+}
+
+.dark-theme body {
+  background-color: var(--background-dark);
+  color: var(--text-light);
+}
+
+/* Material Icons Helper */
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+}
