@@ -8,5 +8,7 @@ public class Organization
     public string? Email { get; set; }
     public string? Phone { get; set; }
     public string? LogoPath { get; set; }
+    public string? PublicKey { get; set; }
+    public string? PrivateKeyEncrypted { get; set; }
     public bool IsActive { get; set; } = true;
 }

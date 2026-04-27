@@ -47,6 +47,10 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
 builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddScoped<IPkiService, PkiService>();
+builder.Services.AddScoped<IIpfsService, IpfsService>();
+builder.Services.AddScoped<IBlockchainService, BlockchainService>();
+builder.Services.AddHttpClient<IIpfsService, IpfsService>();
 
 // JWT Authentication Setup
 var key = Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!);

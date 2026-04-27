@@ -16,6 +16,10 @@ public class Certificate
     public string CurrentHash { get; set; } = string.Empty;
     public string? QRCodePath { get; set; }
     public string Status { get; set; } = "Active"; // Active / Revoked
+    public string? IpfsCid { get; set; }
+    public string? DigitalSignature { get; set; }
+    public string? BlockchainTxHash { get; set; }
+    public string? BlockchainStatus { get; set; } = "Pending";
     public int CreatedBy { get; set; }
     
     [System.ComponentModel.DataAnnotations.Schema.ForeignKey("CreatedBy")]

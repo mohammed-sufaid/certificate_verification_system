@@ -15,10 +15,20 @@ namespace CertificateVerification.API.Controllers;
 public class CertificateController : ControllerBase
 {
     private readonly IApplicationDbContext _context;
+    private readonly IPkiService _pkiService;
+    private readonly IIpfsService _ipfsService;
+    private readonly IBlockchainService _blockchainService;
 
-    public CertificateController(IApplicationDbContext context)
+    public CertificateController(
+        IApplicationDbContext context, 
+        IPkiService pkiService, 
+        IIpfsService ipfsService, 
+        IBlockchainService blockchainService)
     {
         _context = context;
+        _pkiService = pkiService;
+        _ipfsService = ipfsService;
+        _blockchainService = blockchainService;
     }
 
     [HttpPost]
@@ -45,6 +55,17 @@ public class CertificateController : ControllerBase
             request.IssueDate,
             previousHash);
 
+        // Get Organization and handle PKI Keys
+        var organization = await _context.Organizations.FindAsync(request.OrganizationId);
+        if (organization == null) return BadRequest("Organization not found.");
+
+        if (string.IsNullOrEmpty(organization.PrivateKeyEncrypted))
+        {
+            var (pub, priv) = _pkiService.GenerateKeyPair();
+            organization.PublicKey = pub;
+            organization.PrivateKeyEncrypted = priv; // In real app, encrypt this
+        }
+
         var certificate = new Certificate
         {
             CertificateNumber = request.CertificateNumber,
@@ -56,8 +77,17 @@ public class CertificateController : ControllerBase
             OrganizationId = request.OrganizationId,
             PreviousHash = previousHash,
             CurrentHash = currentHash,
-            CreatedBy = userId
+            CreatedBy = userId,
+            DigitalSignature = _pkiService.SignData(currentHash, organization.PrivateKeyEncrypted)
         };
+
+        // IPFS Integration - Uploading basic metadata
+        var metadata = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(new { certificate.CertificateNumber, certificate.CurrentHash, certificate.DigitalSignature });
+        certificate.IpfsCid = await _ipfsService.UploadFileAsync(metadata);
+
+        // Blockchain Integration - Anchoring
+        certificate.BlockchainTxHash = await _blockchainService.AnchorHashAsync(currentHash);
+        certificate.BlockchainStatus = "Anchored";
 
         _context.Certificates.Add(certificate);
         

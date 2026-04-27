@@ -10,10 +10,12 @@ namespace CertificateVerification.API.Controllers;
 public class VerificationController : ControllerBase
 {
     private readonly IApplicationDbContext _context;
+    private readonly IPkiService _pkiService;
 
-    public VerificationController(IApplicationDbContext context)
+    public VerificationController(IApplicationDbContext context, IPkiService pkiService)
     {
         _context = context;
+        _pkiService = pkiService;
     }
 
     [HttpGet("{certificateNumber}")]
@@ -46,10 +48,25 @@ public class VerificationController : ControllerBase
             return BadRequest(new { Authentic = false, Message = "Certificate integrity compromised! Tampering detected." });
         }
 
+        // Verify Digital Signature
+        bool isSignatureValid = false;
+        if (!string.IsNullOrEmpty(certificate.DigitalSignature) && !string.IsNullOrEmpty(certificate.Organization.PublicKey))
+        {
+            isSignatureValid = _pkiService.VerifySignature(certificate.CurrentHash, certificate.DigitalSignature, certificate.Organization.PublicKey);
+        }
+
         return Ok(new 
         { 
             Authentic = true, 
             Message = "Certificate is valid and untampered.",
+            SecurityProofs = new
+            {
+                InternalHashVerified = true,
+                DigitalSignatureVerified = isSignatureValid,
+                IpfsStorage = certificate.IpfsCid != null ? $"ipfs://{certificate.IpfsCid}" : "N/A",
+                BlockchainAnchor = certificate.BlockchainTxHash != null ? $"https://polygonscan.com/tx/{certificate.BlockchainTxHash}" : "Pending",
+                BlockchainStatus = certificate.BlockchainStatus
+            },
             Data = new
             {
                 certificate.CertificateNumber,
