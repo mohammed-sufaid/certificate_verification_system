@@ -107,6 +107,10 @@ CREATE TABLE [dbo].[Certificates] (
   [CurrentHash] nvarchar(100) COLLATE SQL_Latin1_General_CP1_CI_AS  NOT NULL,
   [QRCodePath] nvarchar(500) COLLATE SQL_Latin1_General_CP1_CI_AS  NULL,
   [Status] nvarchar(50) COLLATE SQL_Latin1_General_CP1_CI_AS DEFAULT 'Active' NULL,
+  [IpfsCid] nvarchar(max) COLLATE SQL_Latin1_General_CP1_CI_AS  NULL,
+  [DigitalSignature] nvarchar(max) COLLATE SQL_Latin1_General_CP1_CI_AS  NULL,
+  [BlockchainTxHash] nvarchar(max) COLLATE SQL_Latin1_General_CP1_CI_AS  NULL,
+  [BlockchainStatus] nvarchar(max) COLLATE SQL_Latin1_General_CP1_CI_AS DEFAULT 'Pending' NULL,
   [CreatedBy] int  NOT NULL,
   [CreatedDate] datetime2(7) DEFAULT getutcdate() NULL
 )
@@ -152,6 +156,8 @@ CREATE TABLE [dbo].[Organizations] (
   [Email] nvarchar(100) COLLATE SQL_Latin1_General_CP1_CI_AS  NULL,
   [Phone] nvarchar(20) COLLATE SQL_Latin1_General_CP1_CI_AS  NULL,
   [LogoPath] nvarchar(500) COLLATE SQL_Latin1_General_CP1_CI_AS  NULL,
+  [PublicKey] nvarchar(max) COLLATE SQL_Latin1_General_CP1_CI_AS  NULL,
+  [PrivateKeyEncrypted] nvarchar(max) COLLATE SQL_Latin1_General_CP1_CI_AS  NULL,
   [IsActive] bit DEFAULT 1 NULL
 )
 GO
